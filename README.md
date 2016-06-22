@@ -1,18 +1,18 @@
-# PCBR (Pairs Comparision Based Rating)
+# PCBR (Pairs Comparison Based Rating)
 
 Making ratings is fun. After applying my method several times I've decided to gemify it.
 
 ### Examples
 
-TODO
+See [`describe "examples" do` in specs](spec/_spec.rb).
 
 ### How it works
 
-The first idea of rating items by one-to-one comparision was about QuakeLive players in 2013 or so and it didn't work well. At that time I was thinking about tree data structure. Later in May 2015 I've realised that it's simply about dots in n-dimensional space and sectors.
+The first idea of rating items by one-to-one comparison was about QuakeLive players in 2013 or so and it didn't work well. At that time I was thinking about tree data structure. Later in May 2015 I've realised that it's really about dots in n-dimensional space and sectors. Applying it to Reddit RSS made my feed 50% more interesting.
 
-TODO: better desription
+TODO: describe/illustrate algorithm?
 
-At the moment it's a "proof of concept". It needs huge optimisations for lookups, maybe using trees.
+At the moment it's a "proof of concept" -- it needs huge optimisations for lookups, maybe using trees.
 
 ### Installation
 
