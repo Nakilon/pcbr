@@ -2,11 +2,27 @@ require_relative "../lib/pcbr"
 
 describe "basic specs" do
 
+  example "scalar key without vector and without &block" do
+    rating = PCBR.new
+    rating.store 1
+    rating.store 2
+    expect(rating.sorted).to eq([2, 1])
+  end
+
   example "#size", skip: :deprecated do
     rating = PCBR.new
     rating.store 1
     rating.store 2
     expect(rating.size).to eq(2)
+  end
+
+  example "&block" do
+    rating = PCBR.new do |item|
+      [item[:goodness], -item[:badness]]
+    end
+    rating.store 2, {goodness: 1, badness: 2}
+    rating.store 1, {goodness: 1, badness: 1}
+    expect(rating.sorted).to eq([1, 2])
   end
 
   example "order and methods: #score[key], #sorted, #data" do
@@ -26,23 +42,7 @@ describe "basic specs" do
     table.each do |key, _, score|
       expect(rating.score(key)).to eq(score)
     end
-    expect(rating.table ).to eq(table)
-  end
-
-  example "&block" do
-    rating = PCBR.new do |item|
-      [item[:goodness], -item[:badness]]
-    end
-    rating.store 2, {goodness: 1, badness: 2}
-    rating.store 1, {goodness: 1, badness: 1}
-    expect(rating.sorted).to eq([1, 2])
-  end
-
-  example "scalar key without vector and without &block" do
-    rating = PCBR.new
-    rating.store 1
-    rating.store 2
-    expect(rating.sorted).to eq([2, 1])
+    expect(rating.table).to eq(table)
   end
 
 end
