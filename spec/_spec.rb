@@ -78,7 +78,7 @@ describe "examples" do
       "DOT: capistrano/capistrano" => {issue: 38, pr: 6, watch: 339, star: 8392, fork: 1365},
     }
 
-    store_repos_to_rating = lambda do |rating|
+    push_repos = lambda do |rating|
       repos.each do |repo_name, repo_stats|
         rating.store repo_name, repo_stats
       end
@@ -87,17 +87,17 @@ describe "examples" do
     contribution_intensivity_rating = PCBR.new do |repo_stats| [
       repo_stats[:pr],
       -repo_stats[:fork],
-    ] end.tap &store_repos_to_rating
+    ] end.tap &push_repos
 
     quality_rating = PCBR.new do |repo_stats| [
       repo_stats[:star],
       -repo_stats[:issue],
-    ] end.tap &store_repos_to_rating
+    ] end.tap &push_repos
 
     resulting_rating = PCBR.new do |_, repo_name| [
       contribution_intensivity_rating.score(repo_name),
       quality_rating.score(repo_name),
-    ] end.tap &store_repos_to_rating
+    ] end.tap &push_repos
 
     aggregate_failures do
       expect(
