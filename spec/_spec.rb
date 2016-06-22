@@ -1,6 +1,6 @@
 require_relative "../lib/pcbr"
 
-describe PCBR do
+describe "basic specs" do
 
   example "#size" do
     rating = PCBR.new
@@ -31,9 +31,11 @@ describe PCBR do
     }.each do |item, score|
       expect(rating.score(item)).to eq(score)
     end
-    expect(rating.sorted).to eq(expectation.keys)
-    expect(rating.scores).to eq(expectation     )
-    expect(rating.data  ).to eq(data            )
+    aggregate_failures do
+      expect(rating.sorted).to eq(expectation.keys)
+      expect(rating.scores).to eq(expectation     )
+      expect(rating.data  ).to eq(data            )
+    end
   end
 
   example "&block" do
