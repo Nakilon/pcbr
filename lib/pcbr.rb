@@ -1,15 +1,17 @@
 class PCBR
 
-  VERSION = "0.0.2"
+  VERSION = "0.1.0"
+
+  attr_reader :table
 
   def initialize &block
     @table = []
     @callback = block || ->*_{[*_[0]]}
   end
 
-  def size
-    @table.size
-  end
+  # def size
+  #   @table.size
+  # end
 
   def store key, *vector
     vector = vector.empty? ? [key] : vector.first
@@ -30,13 +32,6 @@ class PCBR
   def sorted
     # from the best to the worst
     @table.sort_by.with_index{ |item, i| [-item.last, i] }.map(&:first)
-  end
-
-  def data
-    Hash[ @table.map{ |key, vector, score| [key, vector] } ]
-  end
-  def scores
-    Hash[ @table.map{ |key, vector, score| [key, score] } ]
   end
 
 end

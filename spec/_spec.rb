@@ -2,40 +2,31 @@ require_relative "../lib/pcbr"
 
 describe "basic specs" do
 
-  example "#size" do
+  example "#size", skip: :deprecated do
     rating = PCBR.new
     rating.store 1
     rating.store 2
     expect(rating.size).to eq(2)
   end
 
-  example "order, #score[key] and main methods" do
+  example "order and methods: #score[key], #sorted, #data" do
     rating = PCBR.new
-    data = {
-      1 => [1, 1],
-      2 => [2, 2],
-      3 => [0, 0],
-      4 => [1, 2],
-      6 => [1, 1],
-      5 => [0, 2],
-    }.each do |key, vector|
+    table = [
+      [1, [1, 1], -1],
+      [2, [2, 2],  5],
+      [3, [0, 0], -5],
+      [4, [1, 2],  3],
+      [6, [1, 1], -1],
+      [5, [0, 2], -1],
+    ].each do |key, vector, |
       rating.store key, vector
     end
-    expectation = {
-      2 =>  5,
-      4 =>  3,
-      1 => -1,
-      6 => -1,
-      5 => -1,
-      3 => -5,
-    }.each do |item, score|
-      expect(rating.score(item)).to eq(score)
+    expect(rating.sorted).to eq([2, 4, 1, 6, 5, 3])
+    expect(rating.table.map(&:last).inject(:+)).to be_zero
+    table.each do |key, _, score|
+      expect(rating.score(key)).to eq(score)
     end
-    aggregate_failures do
-      expect(rating.sorted).to eq(expectation.keys)
-      expect(rating.scores).to eq(expectation     )
-      expect(rating.data  ).to eq(data            )
-    end
+    expect(rating.table ).to eq(table)
   end
 
   example "&block" do
