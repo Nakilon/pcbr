@@ -4,7 +4,7 @@ class PCBR
 
   def initialize &block
     @table = []
-    @callback = block || ->_{[*_]}
+    @callback = block || ->*_{[*_[0]]}
   end
 
   def size
@@ -14,7 +14,7 @@ class PCBR
   def store key, *vector
     vector = vector.empty? ? [key] : vector.first
     score = @table.map do |item|
-      @callback[vector].zip(@callback[item[1]]).map do |a, b|
+      @callback[vector, key].zip(@callback[item[1], item[0]]).map do |a, b|
         a <=> b
       end.uniq.inject(0, :+).tap do |point|
         item[2] -= point
