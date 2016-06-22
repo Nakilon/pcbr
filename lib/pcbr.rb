@@ -28,7 +28,8 @@ class PCBR
   end
 
   def sorted
-    @table.sort_by.with_index{ |item, i| [item.last, i] }.map(&:first)
+    # from the best to the worst
+    @table.sort_by.with_index{ |item, i| [-item.last, i] }.map(&:first)
   end
 
   def data

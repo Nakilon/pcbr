@@ -22,12 +22,12 @@ describe PCBR do
       rating.store key, vector
     end
     expectation = {
-      3 => -5,
+      2 =>  5,
+      4 =>  3,
       1 => -1,
       6 => -1,
       5 => -1,
-      4 =>  3,
-      2 =>  5,
+      3 => -5,
     }.each do |item, score|
       expect(rating.score(item)).to eq(score)
     end
@@ -40,16 +40,16 @@ describe PCBR do
     rating = PCBR.new do |item|
       [item[:goodness], -item[:badness]]
     end
-    rating.store 1, {goodness: 1, badness: 1}
     rating.store 2, {goodness: 1, badness: 2}
-    expect(rating.sorted).to eq([2, 1])
+    rating.store 1, {goodness: 1, badness: 1}
+    expect(rating.sorted).to eq([1, 2])
   end
 
   example "scalar key without vector and without &block" do
     rating = PCBR.new
-    rating.store 2
     rating.store 1
-    expect(rating.sorted).to eq([1, 2])
+    rating.store 2
+    expect(rating.sorted).to eq([2, 1])
   end
 
 end
