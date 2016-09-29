@@ -1,6 +1,6 @@
 class PCBR
 
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   attr_reader :table
 
@@ -15,23 +15,24 @@ class PCBR
 
   def store key, *vector
     vector = vector.empty? ? [key] : vector.first
+    calculated = @callback[vector, key]
     score = @table.map do |item|
-      @callback[vector, key].zip(@callback[item[1], item[0]]).map do |a, b|
+      calculated.zip(item[3]).map do |a, b|
         a <=> b
       end.uniq.inject(0, :+).tap do |point|
         item[2] -= point
       end
     end.inject 0, :+
-    @table.push [key, vector, score]
+    @table.push [key, vector, score, calculated]
   end
 
   def score key
-    @table.assoc(key).last
+    @table.assoc(key)[-2]
   end
 
   def sorted
     # from the best to the worst
-    @table.sort_by.with_index{ |item, i| [-item.last, i] }.map(&:first)
+    @table.sort_by.with_index{ |item, i| [-item[2], i] }.map(&:first)
   end
 
 end

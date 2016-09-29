@@ -1,5 +1,9 @@
 require_relative "../lib/pcbr"
 
+
+require "pp"
+
+
 describe "basic specs" do
 
   example "scalar key without vector and without &block" do
@@ -17,28 +21,32 @@ describe "basic specs" do
   end
 
   example "&block" do
+    n = 0
     rating = PCBR.new do |item|
+      n += 1
       [item[:goodness], -item[:badness]]
     end
+    rating.store 3, {goodness: 0, badness: 2}
     rating.store 2, {goodness: 1, badness: 2}
     rating.store 1, {goodness: 1, badness: 1}
-    expect(rating.sorted).to eq([1, 2])
+    expect(rating.sorted).to eq([1, 2, 3])
+    expect(n).to eq(3)
   end
 
-  example "order and methods: #score[key], #sorted, #data" do
+  example "#sorted and #score[key]" do
     rating = PCBR.new
     table = [
-      [1, [1, 1], -1],
-      [2, [2, 2],  5],
-      [3, [0, 0], -5],
-      [4, [1, 2],  3],
-      [6, [1, 1], -1],
-      [5, [0, 2], -1],
+      [1, [1, 1], -1, [1, 1]],
+      [2, [2, 2],  5, [2, 2]],
+      [3, [0, 0], -5, [0, 0]],
+      [4, [1, 2],  3, [1, 2]],
+      [6, [1, 1], -1, [1, 1]],
+      [5, [0, 2], -1, [0, 2]],
     ].each do |key, vector, |
       rating.store key, vector
     end
     expect(rating.sorted).to eq([2, 4, 1, 6, 5, 3])
-    expect(rating.table.map(&:last).inject(:+)).to be_zero
+    expect(rating.table.map{ |i| i[2] }.inject(:+)).to be_zero
     table.each do |key, _, score|
       expect(rating.score(key)).to eq(score)
     end
@@ -46,6 +54,7 @@ describe "basic specs" do
   end
 
 end
+
 
 describe "examples" do
 
@@ -72,7 +81,7 @@ describe "examples" do
       # Ruby Version Manager
       "RVM: rbenv/rbenv" => {issue: 24, pr: 12, watch: 301, star: 8257, fork: 769},
       "RVM: rvm/rvm" => {issue: 160, pr: 5, watch: 154, star: 3328, fork: 793},
-      # DevOps Tools
+      # DevOps Tool
       "DOT: ansible/ansible" => {issue: 1074, pr: 322, watch: 1339, star: 16926, fork: 5075},
       "DOT: chef/chef" => {issue: 422, pr: 52, watch: 387, star: 4265, fork: 1774},
       "DOT: capistrano/capistrano" => {issue: 38, pr: 6, watch: 339, star: 8392, fork: 1365},
