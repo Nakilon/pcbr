@@ -1,6 +1,6 @@
 class PCBR
 
-  VERSION = "0.1.1"
+  VERSION = "0.1.2"
 
   attr_reader :table
 
@@ -13,16 +13,21 @@ class PCBR
   #   @table.size
   # end
 
+  ARRAY_101 = [0, 0, 0]
   def store key, *vector
     vector = vector.empty? ? [key] : vector.first
     calculated = @callback[vector, key]
-    score = @table.map do |item|
-      calculated.zip(item[3]).map do |a, b|
-        a <=> b
-      end.uniq.inject(0, :+).tap do |point|
-        item[2] -= point
+    score = 0
+    @table.each do |item|
+      array = ARRAY_101.dup
+      calculated.zip(item[3]).each do |a, b|
+        t = a <=> b
+        array[t] = t
       end
-    end.inject 0, :+
+      point = array.inject :+
+      score += point
+      item[2] -= point
+    end
     @table.push [key, vector, score, calculated]
   end
 
