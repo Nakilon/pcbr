@@ -1,6 +1,6 @@
 class PCBR
 
-  VERSION = "0.1.2"
+  VERSION = "0.1.3"
 
   attr_reader :table
 
@@ -21,7 +21,7 @@ class PCBR
     @table.each do |item|
       array = ARRAY_101.dup
       calculated.zip(item[3]).each do |a, b|
-        t = a <=> b
+        next unless t = a <=> b
         array[t] = t
       end
       point = array.inject :+

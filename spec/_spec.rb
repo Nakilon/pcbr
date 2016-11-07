@@ -20,6 +20,15 @@ describe "basic specs" do
     expect(rating.size).to eq(2)
   end
 
+  example "Nil elements in vector are ignored" do
+    rating = PCBR.new
+    rating.store 1, [1, nil]
+    rating.store 2, [2, nil]
+    rating.store 3, [nil, 3]
+    rating.store 4, [nil, 4]
+    expect(rating.sorted).to eq([2, 4, 1, 3])
+  end
+
   example "&block" do
     n = 0
     rating = PCBR.new do |item|
