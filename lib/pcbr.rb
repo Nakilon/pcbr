@@ -20,7 +20,8 @@ class PCBR
     score = 0
     @table.each do |item|
       array = ARRAY_101.dup
-      calculated.zip(item[3]).each do |a, b|
+      fail unless calculated.size == item[3].size
+      calculated.zip(item[3]) do |a, b|
         next unless t = a <=> b
         array[t] = t
       end
