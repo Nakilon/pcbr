@@ -12,7 +12,9 @@ The first idea of rating items by one-to-one comparison was about QuakeLive play
 
 TODO: describe/illustrate algorithm?
 
-At the moment it's a "proof of concept" -- it needs huge optimisations for lookups, maybe using trees.
+~~At the moment it's a "proof of concept" -- it needs huge optimisations for lookups, maybe using trees.~~
+
+It worked fine in production for a project with huge computations where you can't find the best solution but have to find anything good in adequate time. Traversing the tree using this with a vector of `[leaf's quality, depth]` made things better than depth-first search with lots of ueristics.
 
 ### Installation
 
