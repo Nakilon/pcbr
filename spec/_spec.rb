@@ -31,26 +31,27 @@ describe "basic specs" do
 
   example "&block" do
     n = 0
-    rating = PCBR.new do |item|
+    rating = PCBR.new do |a, b|
       n += 1
-      [item[:goodness], -item[:badness]]
+      a <=> b
     end
-    rating.store 3, {goodness: 0, badness: 2}
-    rating.store 2, {goodness: 1, badness: 2}
-    rating.store 1, {goodness: 1, badness: 1}
-    expect(rating.sorted).to eq([1, 2, 3])
-    expect(n).to eq(3)
+    rating.store 1
+    rating.store 2
+    rating.store 3
+    rating.store 4
+    expect(rating.sorted).to eq([4, 3, 2, 1])
+    expect(n).to eq(6)
   end
 
   example "#sorted and #score[key]" do
     rating = PCBR.new
     table = [
-      [1, [1, 1], -1, [1, 1]],
-      [2, [2, 2],  5, [2, 2]],
-      [3, [0, 0], -5, [0, 0]],
-      [4, [1, 2],  3, [1, 2]],
-      [6, [1, 1], -1, [1, 1]],
-      [5, [0, 2], -1, [0, 2]],
+      [1, [1, 1], -1],
+      [2, [2, 2],  5],
+      [3, [0, 0], -5],
+      [4, [1, 2],  3],
+      [6, [1, 1], -1],
+      [5, [0, 2], -1],
     ].each do |key, vector, |
       rating.store key, vector
     end
@@ -96,26 +97,28 @@ describe "examples" do
       "DOT: capistrano/capistrano" => {issue: 38, pr: 6, watch: 339, star: 8392, fork: 1365},
     }
 
-    push_repos = lambda do |rating|
-      repos.each do |repo_name, repo_stats|
-        rating.store repo_name, repo_stats
+    create_rating = lambda do |&callback|
+      PCBR.new.tap do |rating|
+        repos.each do |repo_name, repo_stats|
+          rating.store repo_name, callback[repo_stats, repo_name]
+        end
       end
     end
 
-    contribution_intensivity_rating = PCBR.new do |repo_stats| [
+    contribution_intensivity_rating = create_rating.call do |repo_stats| [
       repo_stats[:pr],
       -repo_stats[:fork],
-    ] end.tap &push_repos
+    ] end
 
-    quality_rating = PCBR.new do |repo_stats| [
+    quality_rating = create_rating.call do |repo_stats| [
       repo_stats[:star],
       -repo_stats[:issue],
-    ] end.tap &push_repos
+    ] end
 
-    resulting_rating = PCBR.new do |_, repo_name| [
+    resulting_rating = create_rating.call do |repo_stats, repo_name| [
       contribution_intensivity_rating.score(repo_name),
       quality_rating.score(repo_name),
-    ] end.tap &push_repos
+    ] end
 
     aggregate_failures do
       expect(
