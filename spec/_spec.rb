@@ -13,12 +13,12 @@ describe "basic specs" do
     expect(rating.sorted).to eq([2, 1])
   end
 
-  example "#size", skip: :deprecated do
-    rating = PCBR.new
-    rating.store 1
-    rating.store 2
-    expect(rating.size).to eq(2)
-  end
+  # example "#size" do
+  #   rating = PCBR.new
+  #   rating.store 1
+  #   rating.store 2
+  #   expect(rating.size).to eq(2)
+  # end
 
   example "Nil elements in vector are ignored" do
     rating = PCBR.new
@@ -62,6 +62,20 @@ describe "basic specs" do
     end
     expect(rating.table).to eq(table)
   end
+
+  # example "quality estimation" do
+  #   rating = PCBR.new
+  #   table = [
+  #     [1, [1, 1]],
+  #     [2, [2, 2]],
+  #     [3, [0, 0]],
+  #     [4, [1, 2]],
+  #     [6, [1, 1]],
+  #     [5, [0, 2]],
+  #   ].each do |key, vector, |
+  #     rating.store key, vector
+  #   end
+  # end
 
 end
 
