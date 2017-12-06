@@ -15,14 +15,12 @@ class PCBR
     }
   end
 
-  def store key, *vector
-    vector = vector.empty? ? key : vector.first
+  def store key, vector = nil
+    vector ||= Array key
     score = 0
     @table.each do |item|
-      fail unless [*vector].size == [*item[1]].size
-
+      fail "comparison vectors are of the different length" unless vector.size == item[1].size
       point = @callback.call vector, item[1]
-
       score += point
       item[2] -= point
     end
