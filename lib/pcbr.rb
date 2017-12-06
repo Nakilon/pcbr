@@ -1,6 +1,11 @@
 module PCBR
   VERSION = "0.3.0"
 
+  class Error < RuntimeError
+    # def initialize body
+    #   super "#{Module.nesting[1]} error: #{body}"
+    # end
+  end
 
   def self.new &block
     Storage.new &block
@@ -22,11 +27,12 @@ module PCBR
     end
 
     def store key, vector = nil
+      raise Error.new "duplicating key" if @table.assoc key
       vector ||= Array key
       score = 0
       @table.each do |item|
         # TODO test of this exception
-        fail "comparison vectors are of the different length" unless vector.size == item[1].size
+        raise Error.new "comparison vectors are of the different length" unless vector.size == item[1].size
         point = @callback.call vector, item[1]
         score += point
         item[2] -= point

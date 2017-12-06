@@ -77,6 +77,12 @@ describe "basic specs" do
   #   end
   # end
 
+  example "duplicating keys are forbidden" do
+    rating = PCBR.new
+    rating.store 0
+    expect{ rating.store 0 }.to raise_error PCBR::Error
+  end
+
 end
 
 
