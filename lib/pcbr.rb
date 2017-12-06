@@ -1,3 +1,5 @@
+require "deep_dup"
+
 module PCBR
   VERSION = "0.3.0"
 
@@ -28,7 +30,12 @@ module PCBR
 
     def store key, vector = nil
       raise Error.new "duplicating key" if @table.assoc key
-      vector ||= Array key
+      key = DeepDup.deep_dup key
+      vector = if vector
+        DeepDup.deep_dup vector
+      else
+        Array key
+      end
       score = 0
       @table.each do |item|
         # TODO test of this exception

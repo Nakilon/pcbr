@@ -83,6 +83,18 @@ describe "basic specs" do
     expect{ rating.store 0 }.to raise_error PCBR::Error
   end
 
+  example "keys and vectors are dupped" do
+    rating = PCBR.new
+    a = [[1]]
+    v = [0]
+    rating.store a, v
+    a[0][0] = 2
+    rating.store [[2]], [1]   # expect no PCBR::Error
+    v[0] = 3
+    rating.store [[3]], [2]
+    expect(rating.sorted).to eq [[[3]], [[2]], [[1]]]
+  end
+
 end
 
 
