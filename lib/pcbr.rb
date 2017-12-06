@@ -7,12 +7,11 @@ class PCBR
   def initialize &block
     @table = []
     @callback = block || lambda{ |a_, b_|
-      array = ARRAY_101.dup
-      [*a_].zip([*b_]) do |a, b|
-        next unless t = a <=> b
-        array[t] = t
-      end
-      array.inject :+
+      ARRAY_101.dup.tap do |array|
+        [*a_].zip([*b_]) do |a, b|
+          t = a <=> b and array[t] = t
+        end
+      end.inject :+
     }
   end
 
