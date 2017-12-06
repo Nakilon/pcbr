@@ -1,9 +1,15 @@
-class PCBR
-  VERSION = "0.2.0"
+module PCBR
+  VERSION = "0.3.0"
 
-  attr_reader :table
+
+  def self.new &block
+    Storage.new &block
+  end
 
   ARRAY_101 = [0, 0, 0]
+  class Storage
+  attr_reader :table
+
   def initialize &block
     @table = []
     @callback = block || lambda{ |a_, b_|
@@ -19,6 +25,7 @@ class PCBR
     vector ||= Array key
     score = 0
     @table.each do |item|
+      # TODO test of this exception
       fail "comparison vectors are of the different length" unless vector.size == item[1].size
       point = @callback.call vector, item[1]
       score += point
@@ -45,4 +52,5 @@ class PCBR
   #   end
   # end
 
+end
 end
