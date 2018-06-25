@@ -1,8 +1,4 @@
-require "deep_dup"
-
 module PCBR
-  VERSION = "0.3.0"
-
   class Error < RuntimeError
     # def initialize body
     #   super "#{Module.nesting[1]} error: #{body}"
@@ -30,11 +26,11 @@ module PCBR
 
     def store key, vector = nil
       raise Error.new "duplicating key" if @table.assoc key
-      key = DeepDup.deep_dup key
-      vector = if vector
-        DeepDup.deep_dup vector
-      else
+      key = [NilClass, FalseClass, TrueClass, Numeric, Symbol, Method].any?{ |c| key.is_a? c } ? key : key.dup
+      vector = if vector.nil?
         Array key
+      else
+        vector
       end
       score = 0
       @table.each do |item|
