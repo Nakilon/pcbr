@@ -13,6 +13,12 @@ describe "basic specs" do
     expect(rating.sorted).to eq([2, 1])
   end
 
+  example "raises if vectors are of the different length" do
+    rating = PCBR.new
+    rating.store 1, [2]
+    expect{ rating.store 3, [4, 5] }.to raise_error PCBR::Error
+  end
+
   # example "#size" do
   #   rating = PCBR.new
   #   rating.store 1
@@ -41,6 +47,20 @@ describe "basic specs" do
     rating.store 4
     expect(rating.sorted).to eq([4, 3, 2, 1])
     expect(n).to eq(6)
+  end
+
+  example "the vector is not neccessary an Array" do
+    rating = PCBR.new do |a, b|
+      a <=> b
+    end
+    0.class.class_eval do
+      def size
+        fail
+      end
+    end
+    rating.store 1, 2
+    rating.store 2, 1
+    expect(rating.sorted).to eq([1, 2])
   end
 
   example "#sorted and #score[key]" do

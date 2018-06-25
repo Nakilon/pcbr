@@ -16,6 +16,7 @@ module PCBR
     def initialize &block
       @table = []
       @callback = block || lambda{ |a_, b_|
+        raise Error.new "comparison vectors are of the different length" unless a_.size == b_.size
         ARRAY_101.dup.tap do |array|
           [*a_].zip([*b_]) do |a, b|
             t = a <=> b and array[t] = t
@@ -34,8 +35,6 @@ module PCBR
       end
       score = 0
       @table.each do |item|
-        # TODO test of this exception
-        raise Error.new "comparison vectors are of the different length" unless vector.size == item[1].size
         point = @callback.call vector, item[1]
         score += point
         item[2] -= point
