@@ -9,7 +9,6 @@ module PCBR
     Storage.new &block
   end
 
-  ARRAY_101 = [0, 0, 0]
   class Storage
     attr_reader :table
 
@@ -17,27 +16,23 @@ module PCBR
       @table = []
       @callback = block || lambda{ |a_, b_|
         raise Error.new "comparison vectors are of the different length" unless a_.size == b_.size
-        ARRAY_101.dup.tap do |array|
-          [*a_].zip([*b_]) do |a, b|
-            t = a <=> b and array[t] = t
-          end
-        end.inject :+
+        tt = [0, 0, 0]
+        [*a_].zip([*b_]) do |a, b|
+          t = a <=> b and tt[t] = t
+        end
+        tt[0] + tt[1] + tt[2]
       }
     end
 
     def store key, vector = nil
       raise Error.new "duplicating key" if @table.assoc key
       key = [NilClass, FalseClass, TrueClass, Numeric, Symbol, Method].any?{ |c| key.is_a? c } ? key : key.dup
-      vector = if vector.nil?
-        Array key
-      else
-        vector
-      end
+      vector = Array key if vector.nil?
       score = 0
       @table.each do |item|
         point = @callback.call vector, item[1]
-        score += point
         item[2] -= point
+        score += point
       end
       @table.push [key, vector, score]
     end
