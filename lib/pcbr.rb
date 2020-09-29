@@ -11,21 +11,24 @@ module PCBR
 
   class Storage
     attr_reader :table
+    attr_reader :set
+    @@default_lambda = lambda do |a_, b_|
+      raise Error.new "comparison vectors are of the different length" unless a_.size == b_.size
+      tt = [0, 0, 0]
+      [*a_].zip([*b_]) do |a, b|
+        t = a <=> b and tt[t] = t
+      end
+      tt[0] + tt[1] + tt[2]
+    end
 
     def initialize &block
       @table = []
-      @callback = block || lambda{ |a_, b_|
-        raise Error.new "comparison vectors are of the different length" unless a_.size == b_.size
-        tt = [0, 0, 0]
-        [*a_].zip([*b_]) do |a, b|
-          t = a <=> b and tt[t] = t
-        end
-        tt[0] + tt[1] + tt[2]
-      }
+      @set = Set.new
+      @callback = block || @@default_lambda
     end
 
     def store key, vector = nil
-      raise Error.new "duplicating key" if @table.assoc key
+      raise Error.new "duplicating key" if @set.include? key
       key = [NilClass, FalseClass, TrueClass, Numeric, Symbol, Method].any?{ |c| key.is_a? c } ? key : key.dup
       vector = Array key if vector.nil?
       score = 0
@@ -34,6 +37,7 @@ module PCBR
         item[2] -= point
         score += point
       end
+      @set.add key
       @table.push [key, vector, score]
     end
 

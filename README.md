@@ -1,6 +1,6 @@
 # PCBR (Pairs Comparison Based Rating)
 
-Making ratings is fun. After applying my method several times I've decided to gemify it.
+You often need to sort an array of vectors. This allows you to do it without knowing the optimal ranking function and with some pairs of vectors that are not even comparable.
 
 ### Examples
 
@@ -8,22 +8,20 @@ See [`describe "examples" do` in specs](spec/_spec.rb).
 
 ### How it works
 
-The first idea of rating items by one-to-one comparison was about QuakeLive players in 2013 or so and it didn't work well. At that time I was thinking about tree data structure. Later in May 2015 I've realised that it's really about dots in n-dimensional space and sectors. Applying it to Reddit RSS made my feed 50% more interesting.
-
-TODO: describe/illustrate algorithm?
-
-~~At the moment it's a "proof of concept" -- it needs huge optimisations for lookups, maybe using trees.~~
-
-It worked fine in production for a project with huge computations where you can't find the best solution but have to find anything good in adequate time. Traversing the tree using this with a vector of `[leaf's quality, depth]` made things better than depth-first search with lots of ueristics.
+The first idea was in 2013 -- at that time I was imagining it as a tree data structure. Later in May 2015 I've realised that it's really about dots in n-dimensional space and sectors, and round-robin. Applying it to Reddit RSS feed made it 50% more interesting. It also applied well to boost tree search process in the [bad Facebook advertisment classifier](https://drive.google.com/file/d/0B3BLwu7Vb2U-SVhKYWVMR2JvOFk/view?usp=sharing) production project. Since then I mostly use it to oprimize tree searches, it's basically an automated replacement for euristics.
 
 ### Installation
 
     $ gem install pcbr
 
-### Testing with RSpec before contributing
+### Testing
 
     rspec
 
 or
 
     rake spec
+
+### TODO
+
+Illustrate this README, replace rspec with minitest.
