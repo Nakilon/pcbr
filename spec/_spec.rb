@@ -1,41 +1,39 @@
+require "minitest/autorun"
+
 require_relative "../lib/pcbr"
-
-
-require "pp"
-
 
 describe "basic specs" do
 
-  example "scalar key without vector and without &block" do
+  it "scalar key without vector and without &block" do
     rating = PCBR.new
     rating.store 1
     rating.store 2
-    expect(rating.sorted).to eq([2, 1])
+    assert_equal [2, 1], rating.sorted
   end
 
-  example "raises if vectors are of the different length" do
+  it "raises if vectors are of the different length" do
     rating = PCBR.new
     rating.store 1, [2]
-    expect{ rating.store 3, [4, 5] }.to raise_error PCBR::Error
+    assert_raises(PCBR::Error){ rating.store 3, [4, 5] }
   end
 
-  # example "#size" do
+  # it "#size" do
   #   rating = PCBR.new
   #   rating.store 1
   #   rating.store 2
-  #   expect(rating.size).to eq(2)
+  #   assert_equal 2, rating.size
   # end
 
-  example "Nil elements in vector are ignored" do
+  it "Nil elements in vector are ignored" do
     rating = PCBR.new
     rating.store 1, [1, nil]
     rating.store 2, [2, nil]
     rating.store 3, [nil, 3]
     rating.store 4, [nil, 4]
-    expect(rating.sorted).to eq([2, 4, 1, 3])
+    assert_equal [2, 4, 1, 3], rating.sorted
   end
 
-  example "&block" do
+  it "&block" do
     n = 0
     rating = PCBR.new do |a, b|
       n += 1
@@ -45,11 +43,11 @@ describe "basic specs" do
     rating.store 2
     rating.store 3
     rating.store 4
-    expect(rating.sorted).to eq([4, 3, 2, 1])
-    expect(n).to eq(6)
+    assert_equal [4, 3, 2, 1], rating.sorted
+    assert_equal 6, n
   end
 
-  example "the vector is not neccessary an Array" do
+  it "the vector is not neccessary an Array" do
     rating = PCBR.new do |a, b|
       a <=> b
     end
@@ -60,10 +58,10 @@ describe "basic specs" do
     end
     rating.store 1, 2
     rating.store 2, 1
-    expect(rating.sorted).to eq([1, 2])
+    assert_equal [1, 2], rating.sorted
   end
 
-  example "#sorted and #score[key]" do
+  it "#sorted and #score[key]" do
     rating = PCBR.new
     table = [
       [1, [1, 1], -1],
@@ -75,15 +73,15 @@ describe "basic specs" do
     ].each do |key, vector, |
       rating.store key, vector
     end
-    expect(rating.sorted).to eq([2, 4, 1, 6, 5, 3])
-    expect(rating.table.map{ |i| i[2] }.inject(:+)).to be_zero
+    assert_equal [2, 4, 1, 6, 5, 3], rating.sorted
+    assert_equal 0, rating.table.map{ |i| i[2] }.inject(:+)
     table.each do |key, _, score|
-      expect(rating.score(key)).to eq(score)
+      assert_equal score, rating.score(key)
     end
-    expect(rating.table).to eq(table)
+    assert_equal table, rating.table
   end
 
-  # example "quality estimation" do
+  # it "quality estimation" do
   #   rating = PCBR.new
   #   table = [
   #     [1, [1, 1]],
@@ -97,10 +95,10 @@ describe "basic specs" do
   #   end
   # end
 
-  example "duplicating keys are forbidden" do
+  it "duplicating keys are forbidden" do
     rating = PCBR.new
     rating.store 0
-    expect{ rating.store 0 }.to raise_error PCBR::Error
+    assert_raises(PCBR::Error){ rating.store 0 }
   end
 
 end
@@ -108,7 +106,7 @@ end
 
 describe "examples" do
 
-  example "github repos" do
+  it "github repos" do
     repos = {
       # Image Processing Library
       "IPL: ImageMagick/ImageMagick" => {issue: 36, pr: 0, watch: 29, star: 375, fork: 89},
@@ -160,12 +158,7 @@ describe "examples" do
       quality_rating.score(repo_name),
     ] end
 
-    aggregate_failures do
-      expect(
-        resulting_rating.sorted.map(&:split).group_by(&:first).each do |category, group|
-          group.map! &:last
-        end.to_a
-      ).to eq( [
+    assert_equal [
         ["PM:", %w{ Homebrew/brew Linuxbrew/brew }],
         ["RVM:", %w{ rbenv/rbenv rvm/rvm }],
         ["PL:", %w{ racket/racket crystal-lang/crystal elixir-lang/elixir rust-lang/rust golang/go }],
@@ -173,8 +166,7 @@ describe "examples" do
         ["RWF:", %w{ sinatra/sinatra padrino/padrino-framework }],
         ["gem:", %w{ dblock/slack-ruby-bot dblock/slack-ruby-client }],
         ["IPL:", %w{ jcupitt/libvips ImageMagick/ImageMagick }],
-      ] )
-    end
+    ], resulting_rating.sorted.map(&:split).group_by(&:first).each{ |category, group| group.map! &:last }.to_a
   end
 
 end

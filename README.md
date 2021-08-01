@@ -26,4 +26,4 @@ or
 
 ### TODO
 
-Illustrate this README, replace rspec with minitest.
+Add illustrate to this README.
