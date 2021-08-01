@@ -30,7 +30,6 @@ module PCBR
 
     def store key, vector = nil
       raise Error.new "duplicating key" if @set.include? key
-      key = key.class.methods.include?(:new) ? key.dup : key  # https://stackoverflow.com/a/20957908/322020
       vector = Array key if vector.nil?
       score = 0
       @table.each do |item|

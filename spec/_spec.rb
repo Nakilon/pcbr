@@ -103,24 +103,6 @@ describe "basic specs" do
     expect{ rating.store 0 }.to raise_error PCBR::Error
   end
 
-  example "keys are dupped" do
-    rating = PCBR.new
-    a = [1]
-    rating.store a, [0]
-    a[0] = 2
-    rating.store a, [1]
-    expect(rating.sorted).to eq [[2], [1]]
-  end
-
-  example "keys are dupped but not deeply" do
-    rating = PCBR.new
-    a = [[1]]
-    rating.store a, [0]
-    a[0][0] = 2
-    rating.set.instance_variable_get(:@hash).rehash
-    expect{ rating.store [[2]], [1] }.to raise_error PCBR::Error
-  end
-
 end
 
 
