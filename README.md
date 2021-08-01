@@ -18,12 +18,9 @@ The first idea was in 2013 -- at that time I was imagining it as a tree data str
 
 ### Testing
 
-    rspec
-
-or
-
-    rake spec
+    ruby test.rb
 
 ### TODO
 
 Add illustrate to this README.
+Add Github Action.

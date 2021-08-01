@@ -1,6 +1,6 @@
 require "minitest/autorun"
 
-require_relative "../lib/pcbr"
+require_relative "lib/pcbr"
 
 describe "basic specs" do
 
