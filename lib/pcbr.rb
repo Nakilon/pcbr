@@ -22,14 +22,15 @@ module PCBR
     end
 
     def initialize &block
+      require "set"
+      @set = ::Set.new
       @table = []
-      @set = Set.new
       @callback = block || @@default_lambda
     end
 
     def store key, vector = nil
       raise Error.new "duplicating key" if @set.include? key
-      key = [NilClass, FalseClass, TrueClass, Numeric, Symbol, Method].any?{ |c| key.is_a? c } ? key : key.dup
+      key = key.class.methods.include?(:new) ? key.dup : key  # https://stackoverflow.com/a/20957908/322020
       vector = Array key if vector.nil?
       score = 0
       @table.each do |item|
@@ -49,15 +50,6 @@ module PCBR
       # from the best to the worst
       @table.sort_by.with_index{ |item, i| [-item[2], i] }.map(&:first)
     end
-
-    # def quality
-    #   factorial = ->x{ (1..x).inject(:*) }
-    #   (2...@table.size).each do |sublength|
-    #     combinations = factorial[@table.size] / factorial[sublength] / factorial[@table.size - sublength]
-    #     comparisons = sublength * (sublength - 1) / 2
-    #     p [sublength, combinations, comparisons, combinations * comparisons]
-    #   end
-    # end
 
   end
 end

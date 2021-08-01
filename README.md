@@ -12,7 +12,7 @@ The first idea was in 2013 -- at that time I was imagining it as a tree data str
 
 ### Installation
 
-    $ gem install pcbr
+    gem install pcbr
 
 ### Testing
 
